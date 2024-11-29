@@ -6,7 +6,7 @@ use std::path::{Path, PathBuf};
 use std::sync::mpsc;
 use std::thread::{sleep, JoinHandle};
 use std::time::{Duration, Instant};
-use sysinfo::{Pid, PidExt, ProcessExt, System, SystemExt};
+use sysinfo::{Pid,  System};
 
 const POLL_INTERVAL: Duration = Duration::from_millis(1000);
 
@@ -317,15 +317,16 @@ fn launch(path: &Path, args: &[OsString]) -> Result<u32, LabVIEWError> {
 }
 
 /// Returns a list of all instances running of LabVIEW
-fn find_instances(path: &Path) -> HashMap<Pid, String> {
+fn find_instances(path: &Path) -> HashMap<Pid, OsString> {
     let sys = System::new_all();
     let mut processes = HashMap::new();
 
     for (pid, process) in sys.processes() {
-        let process_path = process.exe();
-        // We need to compare starts_with as linux will add suffixes for license version.
-        if process_path.starts_with(path) {
-            processes.insert(*pid, process.name().to_owned());
+        if let Some(process_path) = process.exe() {
+            // We need to compare starts_with as linux will add suffixes for license version.
+            if process_path.starts_with(path) {
+                processes.insert(*pid, process.name().to_owned());
+            }
         }
     }
 
@@ -346,7 +347,7 @@ fn kill(pid: Pid) {
 /// Find the process in the list.
 /// Return Some(pid) if a valid process is found.
 /// Return None if no process matches.
-fn find_process(processes: &HashMap<Pid, String>, original_id: Pid) -> Option<Pid> {
+fn find_process(processes: &HashMap<Pid, OsString>, original_id: Pid) -> Option<Pid> {
     let original_found = processes.contains_key(&original_id);
 
     if original_found {
@@ -362,10 +363,10 @@ mod test {
 
     use super::*;
 
-    fn test_process_list() -> HashMap<Pid, String> {
+    fn test_process_list() -> HashMap<Pid, OsString> {
         let mut processes = HashMap::new();
-        processes.insert(Pid::from(1), String::from("Process"));
-        return processes;
+        processes.insert(Pid::from(1), OsString::from("Process"));
+        processes
     }
 
     #[test]

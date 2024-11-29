@@ -28,3 +28,7 @@ lv-results.xml
 /rust-proxy/target
 
 /*.vip
+
+# IDE Files
+.idea
+.vscode

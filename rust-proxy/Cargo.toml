@@ -12,11 +12,11 @@ keywords = ["LabVIEW"]
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-sysinfo = "0.29"
+sysinfo = "0.32"
 log = "0.4"
 simplelog = "0.12" 
 time = { version = "^0.3.11", features = ["macros"]}
-thiserror = "1.0"
+thiserror = "2.0"
 clap = "4.3"
 # minimal library - remove the features we aren't using.
 ureq = { version = "2.*", default-features = false }
@@ -30,8 +30,8 @@ snapbox = "0.4"
 
 
 [target.'cfg(windows)'.dependencies] 
-winreg = "0.51"
-windows = { version = "0.51", features = ["Win32_Foundation", "Win32_System_Console","Win32_System_Threading", "Win32_Security"]}
+winreg = "0.52"
+windows = { version = "0.58", features = ["Win32_Foundation", "Win32_System_Console","Win32_System_Threading", "Win32_Security"]}
 
 [package.metadata.deb]
 depends = "libc6 (>= 2.12)"
